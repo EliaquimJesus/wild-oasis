@@ -41,16 +41,22 @@ const Label = styled.label`
     font-weight: 500;
 `;
 
-// const Error = styled.span`
-//   font-size: 1.4rem;
-//   color: var(--color-red-700);
-// `;
+const Error = styled.span`
+    font-size: 1.4rem;
+    color: var(--color-red-700);
+`;
 
 function CreateCabinForm() {
-    const { register, handleSubmit, reset } = useForm();
+    const {
+        register,
+        handleSubmit,
+        reset,
+        getValues,
+        formState: { errors },
+    } = useForm();
     const queryClient = useQueryClient();
 
-    const { mutate, isPending } = useMutation({
+    const { isPending: isCreating, mutate } = useMutation({
         mutationFn: createCabin,
         onSuccess: () => {
             toast.success("New cabin successfuly created");
@@ -60,15 +66,22 @@ function CreateCabinForm() {
         onError: (err) => toast.error(err.message),
     });
 
-    function onSubmit(data) {
-        mutate(data);
-    }
+    const onSubmit = (data) => mutate(data);
+
+    const onError = (errors) => console.log(errors);
 
     return (
-        <Form>
-            <FormRow onSubmit={handleSubmit(onSubmit)}>
+        <Form onSubmit={handleSubmit(onSubmit, onError)}>
+            <FormRow>
                 <Label htmlFor="name">Cabin name</Label>
-                <Input type="text" id="name" {...register("name")} />
+                <Input
+                    type="text"
+                    id="name"
+                    {...register("name", {
+                        required: "This filed is required",
+                    })}
+                />
+                {errors?.name?.message && <Error>{errors.name.message}</Error>}
             </FormRow>
 
             <FormRow>
@@ -76,8 +89,17 @@ function CreateCabinForm() {
                 <Input
                     type="number"
                     id="maxCapacity"
-                    {...register("maxCapacity")}
+                    {...register("maxCapacity", {
+                        required: "This filed is required",
+                        min: {
+                            value: 1,
+                            message: "Capacity should be at least 1.",
+                        },
+                    })}
                 />
+                {errors?.maxCapacity?.message && (
+                    <Error>{errors.maxCapacity.message}</Error>
+                )}
             </FormRow>
 
             <FormRow>
@@ -85,8 +107,17 @@ function CreateCabinForm() {
                 <Input
                     type="number"
                     id="regularPrice"
-                    {...register("regularPrice")}
+                    {...register("regularPrice", {
+                        required: "This filed is required",
+                        min: {
+                            value: 1,
+                            message: "Regular price should be at least 1.",
+                        },
+                    })}
                 />
+                {errors?.regularPrice?.message && (
+                    <Error>{errors.regularPrice.message}</Error>
+                )}
             </FormRow>
 
             <FormRow>
@@ -95,8 +126,16 @@ function CreateCabinForm() {
                     type="number"
                     id="discount"
                     defaultValue={0}
-                    {...register("discount")}
+                    {...register("discount", {
+                        required: "This filed is required",
+                        validate: (value) =>
+                            value <= getValues().regularPrice ||
+                            "Discount should be less than regular price",
+                    })}
                 />
+                {errors?.discount?.message && (
+                    <Error>{errors.discount.message}</Error>
+                )}
             </FormRow>
 
             <FormRow>
@@ -105,8 +144,13 @@ function CreateCabinForm() {
                     type="number"
                     id="description"
                     defaultValue=""
-                    {...register("description")}
+                    {...register("description", {
+                        required: "This filed is required",
+                    })}
                 />
+                {errors?.description?.message && (
+                    <Error>{errors.description.message}</Error>
+                )}
             </FormRow>
 
             <FormRow>
@@ -116,10 +160,10 @@ function CreateCabinForm() {
 
             <FormRow>
                 {/* type is an HTML attribute! */}
-                <Button variation="secondary" type="reset">
+                <Button className="secondary" type="reset">
                     Cancel
                 </Button>
-                <Button disabled={isPending}>Add cabin</Button>
+                <Button disabled={isCreating}>Add cabin</Button>
             </FormRow>
         </Form>
     );
