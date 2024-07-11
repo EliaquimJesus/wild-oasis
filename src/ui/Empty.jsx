@@ -1,5 +1,5 @@
-function Empty({ resource }) {
-  return <p>No {resource} could be found.</p>;
+function Empty({ children }) {
+    return <p>{children} </p>;
 }
 
 export default Empty;
