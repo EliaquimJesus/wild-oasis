@@ -75,43 +75,50 @@ function CabinRow({ cabin }) {
                     <span>&mdash;</span>
                 )}
                 <div>
+                    <button onClick={handleDuplicate}>
+                        <HiSquare2Stack />
+                    </button>
                     <Modal>
-                        <Menus.Menu>
-                            <Menus.Toggle id={cabinId} />
-
-                            <Menus.List id={cabinId}>
-                                <Menus.Button
-                                    icon={<HiSquare2Stack />}
-                                    onClick={handleDuplicate}
-                                >
-                                    Duplicate
-                                </Menus.Button>
-                                <Modal.Open opens="update">
-                                    <Menus.Button icon={<HiPencil />}>
-                                        Update
-                                    </Menus.Button>
-                                </Modal.Open>
-                                <Modal.Open open="delete">
-                                    <Menus.Button icon={<HiTrash />}>
-                                        Delete
-                                    </Menus.Button>
-                                </Modal.Open>
-                            </Menus.List>
-
-                            <Modal.Window name="update">
-                                <CreateCabinForm cabinToEdit={cabin} />
-                            </Modal.Window>
-
-                            <Modal.Window open="delete">
-                                <ConfirmDelete
-                                    resourceName="cabins"
-                                    disabled={isDeleting}
-                                    onConfirm={() => deleteCabin(cabinId)}
-                                    onCloseModal={close}
-                                />
-                            </Modal.Window>
-                        </Menus.Menu>
+                        <Modal.Open opens="update">
+                            <button>
+                                <HiPencil />
+                            </button>
+                        </Modal.Open>
+                        <Modal.Window name="update">
+                            <CreateCabinForm cabinToEdit={cabin} />
+                        </Modal.Window>
+                        <Modal.Open open="delete">
+                            <button>
+                                <HiTrash />
+                            </button>
+                        </Modal.Open>
+                        <Modal.Window open="delete">
+                            <ConfirmDelete
+                                resourceName="cabins"
+                                disabled={isDeleting}
+                                onConfirm={() => deleteCabin(cabinId)}
+                                onCloseModal={close}
+                            />
+                        </Modal.Window>
                     </Modal>
+                    <Menus.Menu>
+                        <Menus.Toggle id={cabinId} />
+
+                        <Menus.List id={cabinId}>
+                            <Menus.Button
+                                icon={<HiSquare2Stack />}
+                                onClick={handleDuplicate}
+                            >
+                                Duplicate
+                            </Menus.Button>
+                            <Menus.Button icon={<HiPencil />}>
+                                Update
+                            </Menus.Button>
+                            <Menus.Button icon={<HiTrash />}>
+                                Delete
+                            </Menus.Button>
+                        </Menus.List>
+                    </Menus.Menu>
                 </div>
             </Table.Row>
         </>
