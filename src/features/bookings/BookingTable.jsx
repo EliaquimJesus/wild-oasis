@@ -4,12 +4,13 @@ import Menus from "../../ui/Menus";
 import { useBookings } from "./useBookings";
 import Empty from "../../ui/Empty";
 import Spinner from "../../ui/Spinner";
+import Pagination from "../../ui/Pagination";
 
 function BookingTable() {
-    const { isPending, bookings } = useBookings();
+    const { bookings, isPending } = useBookings();
 
     if (isPending) return <Spinner />;
-    if (!bookings.length) return <Empty>Bookings data is empty.</Empty>;
+    if (!bookings) return <Empty>Bookings data is empty.</Empty>;
 
     // 2) SORT
 
@@ -26,11 +27,14 @@ function BookingTable() {
                 </Table.Header>
 
                 <Table.Body
-                    data={bookings}
+                    data={bookings.data}
                     render={(booking) => (
                         <BookingRow key={booking.id} booking={booking} />
                     )}
                 />
+                <Table.Footer>
+                    <Pagination count={bookings.count} />
+                </Table.Footer>
             </Table>
         </Menus>
     );
