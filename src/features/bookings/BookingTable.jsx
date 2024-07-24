@@ -7,7 +7,7 @@ import Spinner from "../../ui/Spinner";
 import Pagination from "../../ui/Pagination";
 
 function BookingTable() {
-    const { bookings, isPending } = useBookings();
+    const { bookings, isPending, count } = useBookings();
 
     if (isPending) return <Spinner />;
     if (!bookings) return <Empty>Bookings data is empty.</Empty>;
@@ -27,13 +27,13 @@ function BookingTable() {
                 </Table.Header>
 
                 <Table.Body
-                    data={bookings.data}
+                    data={bookings}
                     render={(booking) => (
                         <BookingRow key={booking.id} booking={booking} />
                     )}
                 />
                 <Table.Footer>
-                    <Pagination count={bookings.count} />
+                    <Pagination count={count} />
                 </Table.Footer>
             </Table>
         </Menus>
