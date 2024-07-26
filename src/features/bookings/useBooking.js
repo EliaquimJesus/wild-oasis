@@ -12,10 +12,7 @@ export function useBooking() {
     } = useQuery({
         queryKey: ["booking", bookingId],
         queryFn: () => getBooking(bookingId),
-        retry: false,
     });
 
-    console.log(booking);
-
-    return { isPending, error, booking };
+    return { isPending, booking, error };
 }
