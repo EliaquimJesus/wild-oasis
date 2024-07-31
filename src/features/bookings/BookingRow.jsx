@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { useCheckout } from "../check-in-out/useCheckout";
 import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
-import { DeleteBooking } from "./useDeleteBooking";
+import { useDeleteBooking } from "./useDeleteBooking";
 
 const Cabin = styled.div`
     font-size: 1.6rem;
@@ -66,9 +66,9 @@ function BookingRow({
         "checked-out": "silver",
     };
 
-    const navigate = useNavigate();
     const { checkout, isCheckingOut } = useCheckout();
-    const { isDeleting, deleteBooking } = DeleteBooking();
+    const { isDeleting, deleteBooking } = useDeleteBooking();
+    const navigate = useNavigate();
 
     return (
         <Table.Row>
@@ -124,22 +124,24 @@ function BookingRow({
                                 Check out
                             </Menus.Button>
                         )}
+
                         <Modal.Open open="delete">
                             <Menus.Button icon={<HiTrash />}>
                                 Delete
                             </Menus.Button>
                         </Modal.Open>
-
-                        <Modal.Widow open="delete">
-                            <ConfirmDelete
-                                resourceName="bookings"
-                                disabled={isDeleting}
-                                onConfirm={() => deleteBooking(bookingId)}
-                                onCloseModal={close}
-                            />
-                        </Modal.Widow>
                     </Menus.List>
                 </Menus.Menu>
+                <Modal.Window open="delete">
+                    <ConfirmDelete
+                        resourceName="booking"
+                        disabled={isDeleting}
+                        onConfirm={() => {
+                            deleteBooking(bookingId);
+                        }}
+                        onCloseModal={close}
+                    />
+                </Modal.Window>
             </Modal>
         </Table.Row>
     );

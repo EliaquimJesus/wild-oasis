@@ -14,6 +14,9 @@ import { useBooking } from "./useBooking";
 import { useNavigate } from "react-router-dom";
 import { HiArrowUpOnSquare, HiTrash } from "react-icons/hi2";
 import { useCheckout } from "../check-in-out/useCheckout";
+import Modal from "../../ui/Modal";
+import ConfirmDelete from "../../ui/ConfirmDelete";
+import { useDeleteBooking } from "./useDeleteBooking";
 
 const HeadingGroup = styled.div`
     display: flex;
@@ -23,11 +26,11 @@ const HeadingGroup = styled.div`
 
 function BookingDetail() {
     const { isPending, booking } = useBooking();
-    const navigate = useNavigate();
+    const { checkout, isCheckingOut } = useCheckout();
+    const { isDeleting, deleteBooking } = useDeleteBooking();
 
     const moveBack = useMoveBack();
-
-    const { checkout, isCheckingOut } = useCheckout();
+    const navigate = useNavigate();
 
     const statusToTagName = {
         unconfirmed: "blue",
@@ -69,10 +72,25 @@ function BookingDetail() {
                         Check out
                     </Button>
                 )}
-
-                <Button icon={<HiTrash />} className="danger">
-                    Delete
-                </Button>
+                <Modal>
+                    <Modal.Open open="delete">
+                        <Button icon={<HiTrash />} className="danger">
+                            Delete Booking
+                        </Button>
+                    </Modal.Open>
+                    <Modal.Window open="delete">
+                        <ConfirmDelete
+                            resourceName="booking"
+                            disabled={isDeleting}
+                            onConfirm={() => {
+                                deleteBooking(bookingId, {
+                                    onSettled: () => navigate(-1),
+                                });
+                            }}
+                            onCloseModal={close}
+                        />
+                    </Modal.Window>
+                </Modal>
 
                 <Button className="secondary" onClick={moveBack}>
                     Back
