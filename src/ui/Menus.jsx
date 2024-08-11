@@ -91,6 +91,7 @@ function Toggle({ id }) {
   const { openId, close, open, setPosition } = useContext(MenusContext);
 
   function handleClick(e) {
+    e.stopPropagation();
     // obter a posição do elemento clicado;
     const rect = e.target.closest("button").getBoundingClientRect();
 
@@ -111,7 +112,7 @@ function Toggle({ id }) {
 
 function List({ id, children }) {
   const { openId, close, position } = useContext(MenusContext);
-  const ref = useOutsideClick(close);
+  const ref = useOutsideClick(close, false);
 
   if (openId !== id) return null;
 
